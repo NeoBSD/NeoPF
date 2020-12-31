@@ -8,38 +8,44 @@ type System struct {
 	Hardware          Hardware           `json:"hardware"`
 	Version           Version            `json:"version"`
 	NetworkInterfaces []NetworkInterface `json:"network_interfaces"`
+	PFCTL             PFCTL              `json:"pfctl"`
 }
 
 // GetSystemInfo returns general system infos
-func GetSystemInfo() (System, error) {
+func GetSystemInfo() (*System, error) {
 	hostname, err := GetHostname()
 	if err != nil {
-		return System{}, err
+		return nil, err
 	}
 
 	machine, err := getCommandOutput("uname", "-m")
 	if err != nil {
-		return System{}, err
+		return nil, err
 	}
 
 	machineArch, err := getCommandOutput("uname", "-p")
 	if err != nil {
-		return System{}, err
+		return nil, err
 	}
 
 	hardware, err := GetHardwareInfo()
 	if err != nil {
-		return System{}, err
+		return nil, err
 	}
 
 	version, err := GetVersionInfo()
 	if err != nil {
-		return System{}, err
+		return nil, err
 	}
 
 	interfaces, err := GetNetworkInterfaces()
 	if err != nil {
-		return System{}, err
+		return nil, err
+	}
+
+	pfctl, err := GetPFCTL()
+	if err != nil {
+		return nil, err
 	}
 
 	system := System{
@@ -49,7 +55,8 @@ func GetSystemInfo() (System, error) {
 		Hardware:          hardware,
 		Version:           version,
 		NetworkInterfaces: interfaces,
+		PFCTL:             pfctl,
 	}
 
-	return system, nil
+	return &system, nil
 }
