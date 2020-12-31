@@ -1,0 +1,9 @@
+# EDITORS
+.atom
+.idea
+.vs
+.vscode
+
+# BUILD
+bin
+t.json
